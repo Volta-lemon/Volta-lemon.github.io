@@ -1,0 +1,1697 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="keywords" content="GLAD项目复现, Volta的小屋">
+    <meta name="description" content="[TOC]
+写在前面
+两个项目用一个环境跑即可
+数据集很多，下载方式不同，有的用wget就能下载，在网盘上的没法下载，可能需要登录验证，只能先下载到本地，然后转到服务器上
+
+1. 跑通GLAD地址：https://github.com/hy">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+    <title>GLAD项目复现 | Volta的小屋</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    
+
+
+    <!-- bg-cover style     -->
+
+
+
+<link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.min.css">
+<link rel="stylesheet" type="text/css" href="/libs/materialize/materialize.min.css">
+<link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
+<link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+<link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
+<link rel="stylesheet" type="text/css" href="/css/matery.css">
+<link rel="stylesheet" type="text/css" href="/css/my.css">
+<link rel="stylesheet" type="text/css" href="/css/dark.css" media="none" onload="if(media!='all')media='all'">
+
+
+
+
+    <link rel="stylesheet" href="/libs/tocbot/tocbot.css">
+    <link rel="stylesheet" href="/css/post.css">
+
+
+
+
+    
+        <link rel="stylesheet" type="text/css" href="/css/reward.css">
+    
+
+
+
+    <script src="/libs/jquery/jquery-3.6.0.min.js"></script>
+
+<meta name="generator" content="Hexo 6.3.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+
+
+<body>
+    <header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">Volta的小屋</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
+<ul class="right nav-menu">
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/" class="waves-effect waves-light">
+      
+      <i class="fas fa-home" style="zoom: 0.6;"></i>
+      
+      <span>首页</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/tags" class="waves-effect waves-light">
+      
+      <i class="fas fa-tags" style="zoom: 0.6;"></i>
+      
+      <span>标签</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/categories" class="waves-effect waves-light">
+      
+      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
+      
+      <span>分类</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/archives" class="waves-effect waves-light">
+      
+      <i class="fas fa-archive" style="zoom: 0.6;"></i>
+      
+      <span>归档</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/about" class="waves-effect waves-light">
+      
+      <i class="fas fa-user-circle" style="zoom: 0.6;"></i>
+      
+      <span>关于</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/contact" class="waves-effect waves-light">
+      
+      <i class="fas fa-comments" style="zoom: 0.6;"></i>
+      
+      <span>留言板</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/friends" class="waves-effect waves-light">
+      
+      <i class="fas fa-address-book" style="zoom: 0.6;"></i>
+      
+      <span>友情链接</span>
+    </a>
+    
+  </li>
+  
+  <li>
+    <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+      <i id="searchIcon" class="fas fa-search" title="搜索" style="zoom: 0.85;"></i>
+    </a>
+  </li>
+  <li>
+    <a href="javascript:;" class="waves-effect waves-light" onclick="switchNightMode()" title="深色/浅色模式" >
+      <i id="sum-moon-icon" class="fas fa-sun" style="zoom: 0.85;"></i>
+    </a>
+  </li>
+</ul>
+
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">Volta的小屋</div>
+        <div class="logo-desc">
+            
+            记录自己学业、职业、生活的成长
+            
+        </div>
+    </div>
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li class="m-nav-item">
+	  
+		<a href="/" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-home"></i>
+			
+			首页
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/tags" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-tags"></i>
+			
+			标签
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/categories" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-bookmark"></i>
+			
+			分类
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/archives" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-archive"></i>
+			
+			归档
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/about" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-user-circle"></i>
+			
+			关于
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/contact" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-comments"></i>
+			
+			留言板
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/friends" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-address-book"></i>
+			
+			友情链接
+		</a>
+          
+        </li>
+        
+        
+        <li><div class="divider"></div></li>
+        <li>
+            <a href="https://github.com/blinkfox/hexo-theme-matery" class="waves-effect waves-light" target="_blank">
+                <i class="fab fa-github-square fa-fw"></i>Fork Me
+            </a>
+        </li>
+        
+    </ul>
+</div>
+
+
+        </div>
+
+        
+            <style>
+    .nav-transparent .github-corner {
+        display: none !important;
+    }
+
+    .github-corner {
+        position: absolute;
+        z-index: 10;
+        top: 0;
+        right: 0;
+        border: 0;
+        transform: scale(1.1);
+    }
+
+    .github-corner svg {
+        color: #0f9d58;
+        fill: #fff;
+        height: 64px;
+        width: 64px;
+    }
+
+    .github-corner:hover .octo-arm {
+        animation: a 0.56s ease-in-out;
+    }
+
+    .github-corner .octo-arm {
+        animation: none;
+    }
+
+    @keyframes a {
+        0%,
+        to {
+            transform: rotate(0);
+        }
+        20%,
+        60% {
+            transform: rotate(-25deg);
+        }
+        40%,
+        80% {
+            transform: rotate(10deg);
+        }
+    }
+</style>
+
+<a href="https://github.com/blinkfox/hexo-theme-matery" class="github-corner tooltipped hide-on-med-and-down" target="_blank"
+   data-tooltip="Fork Me" data-position="left" data-delay="50">
+    <svg viewBox="0 0 250 250" aria-hidden="true">
+        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+        <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2"
+              fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
+        <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z"
+              fill="currentColor" class="octo-body"></path>
+    </svg>
+</a>
+        
+    </nav>
+
+</header>
+
+    
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/00098-2534201318.png')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <h1 class="description center-align post-title">GLAD项目复现</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<main class="post-container content">
+
+    
+    <div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/diffusion/">
+                                <span class="chip bg-color">diffusion</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fas fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" class="post-category">
+                                深度学习
+                            </a>
+                        
+                            <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E9%A1%B9%E7%9B%AE%E5%A4%8D%E7%8E%B0/" class="post-category">
+                                项目复现
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2024-09-25
+                </div>
+                
+
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-check fa-fw"></i>更新日期:&nbsp;&nbsp;
+                    2024-11-22
+                </div>
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
+                    3.9k
+                </div>
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
+                    21 分
+                </div>
+                
+
+                
+                    <div id="busuanzi_container_page_pv" class="info-break-policy">
+                        <i class="far fa-eye fa-fw"></i>阅读次数:&nbsp;&nbsp;
+                        <span id="busuanzi_value_page_pv"></span>
+                    </div>
+				
+            </div>
+        </div>
+        <hr class="clearfix">
+
+        
+
+        
+
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <p>[TOC]</p>
+<h1 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h1><ol>
+<li>两个项目用一个环境跑即可</li>
+<li>数据集很多，下载方式不同，有的用wget就能下载，在网盘上的没法下载，可能需要登录验证，只能先下载到本地，然后转到服务器上</li>
+</ol>
+<h1 id="1-跑通GLAD"><a href="#1-跑通GLAD" class="headerlink" title="1. 跑通GLAD"></a>1. 跑通GLAD</h1><p>地址：<a target="_blank" rel="noopener" href="https://github.com/hyao1/GLAD?tab=readme-ov-file">https://github.com/hyao1/GLAD?tab=readme-ov-file</a></p>
+<h2 id="1-1-环境相关"><a href="#1-1-环境相关" class="headerlink" title="1.1 环境相关"></a>1.1 环境相关</h2><ol>
+<li>安装依赖遇到的问题——先修改requirements：</li>
+</ol>
+<p>报错：</p>
+<pre><code>  Downloading https://pypi.tuna.tsinghua.edu.cn/packages/32/5f/f9e60c4718e13eb00a7afaa760c715b3fe9b0a7d04e98e1055c2f119fb86/bitsandbytes-0.37.2-py3-none-any.whl (84.2 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 84.2/84.2 MB 20.0 MB/s eta 0:00:00
+ERROR: Could not find a version that satisfies the requirement diffusers==0.20.0.dev0 (from versions: 0.0.1, 0.0.2, 0.0.3, 0.0.4, 0.1.0, 0.1.1, 0.1.2, 0.1.3, 0.2.0, 0.2.1, 0.2.2, 0.2.3, 0.2.4, 0.3.0, 0.4.0, 0.4.1, 0.4.2, 0.5.0, 0.5.1, 0.6.0, 0.7.0, 0.7.1, 0.7.2, 0.8.0, 0.8.1, 0.9.0, 0.10.0, 0.10.1, 0.10.2, 0.11.0, 0.11.1, 0.12.0, 0.12.1, 0.13.0, 0.13.1, 0.14.0, 0.15.0, 0.15.1, 0.16.0, 0.16.1, 0.17.0, 0.17.1, 0.18.0, 0.18.1, 0.18.2, 0.19.0, 0.19.1, 0.19.2, 0.19.3, 0.20.0, 0.20.1, 0.20.2, 0.21.0, 0.21.1, 0.21.2, 0.21.3, 0.21.4, 0.22.0, 0.22.1, 0.22.2, 0.22.3, 0.23.0, 0.23.1, 0.24.0, 0.25.0, 0.25.1, 0.26.0, 0.26.1, 0.26.2, 0.26.3, 0.27.0, 0.27.1, 0.27.2, 0.28.0, 0.28.1, 0.28.2, 0.29.0, 0.29.1, 0.29.2, 0.30.0, 0.30.1, 0.30.2)
+ERROR: No matching distribution found for diffusers==0.20.0.dev0
+</code></pre>
+<pre><code>  collect2: error: ld returned 1 exit status
+  failure.
+  removing: _configtest.c _configtest.o
+  error: Cannot link MPI programs. Check your configuration!!!
+  ----------------------------------------
+  ERROR: Failed building wheel for mpi4py
+Failed to build mpi4py
+ERROR: Could not build wheels for mpi4py which use PEP 517 and cannot be installed directly
+</code></pre>
+<p>以及找不到torch的包，用以下方法解决，环境问题不用太在意，遇到问题对应解决即可。</p>
+<p>解决：打开requirements.txt修改成</p>
+<pre><code>accelerate==0.19.0
+bitsandbytes==0.37.2
+diffusers==0.20.0
+einops==0.6.1
+huggingface-hub==0.14.1
+imgaug==0.4.0
+safetensors==0.3.1
+scikit-image==0.21.0
+scikit-learn==1.3.0
+scipy==1.11.1
+torch==2.0.1
+torchmetrics==0.10.3
+torchvision==0.15.2
+</code></pre>
+<p>执行完pip install -r requirements.txt 之后执行下方命令</p>
+<pre class=" language-conda"><code class="language-conda">conda install mpi4py
+
+conda list | grep mpi4py    
+</code></pre>
+<p> 有如下效果即可：mpi4py                    3.1.4           py310hfc96bbd_0    defaults                                                                                                                                                                                                                                                                 </p>
+<p>mpi4py问题：<a target="_blank" rel="noopener" href="https://github.com/mpi4py/mpi4py/issues/335">https://github.com/mpi4py/mpi4py/issues/335</a></p>
+<ol start="2">
+<li>数据集下载的问题</li>
+</ol>
+<p>需要下载stable-diffusion-v1-4作为预训练模型：使用git下载</p>
+<p>执行<code>git clone https://huggingface.co/CompVis/stable-diffusion-v1-4</code></p>
+<p>如果报错</p>
+<pre><code>Cloning into &#39;stable-diffusion-v1-4&#39;...
+remote: Enumerating objects: 768, done.
+remote: Total 768 (delta 0), reused 0 (delta 0), pack-reused 768 (from 1)
+Receiving objects: 100% (768/768), 685.35 KiB | 66.00 KiB/s, done.
+Resolving deltas: 100% (140/140), done.
+git-lfs filter-process: 1: git-lfs: not found
+fatal: the remote end hung up unexpectedly
+warning: Clone succeeded, but checkout failed.
+You can inspect what was checked out with &#39;git status&#39;
+and retry with &#39;git restore --source=HEAD :/&#39;
+</code></pre>
+<p>执行：</p>
+<pre><code># install git lfs
+sudo apt-get update
+sudo apt-get install git-lfs
+
+# use git install lfs
+git lfs install
+</code></pre>
+<p>如果不能sudo那就去掉sudo即可，如果去掉sudo没法安装，那就需要对应权限，是服务器设置的原因。</p>
+<ol start="3">
+<li>报错1</li>
+</ol>
+<pre><code>To avoid this warning pass in values for each of the problematic parameters or run `accelerate config`.
+Traceback (most recent call last):
+  File &quot;/root/pro/GLAD/main.py&quot;, line 17, in &lt;module&gt;
+    from pipeline import StableDiffusionPipeline
+  File &quot;/root/pro/GLAD/pipeline.py&quot;, line 21, in &lt;module&gt;
+    from transformers import CLIPImageProcessor, CLIPTextModel, CLIPTokenizer
+ModuleNotFoundError: No module named &#39;transformers&#39;
+Traceback (most recent call last):
+  File &quot;/root/.conda/envs/wenzi/bin/accelerate&quot;, line 8, in &lt;module&gt;
+    sys.exit(main())
+  File &quot;/root/.conda/envs/wenzi/lib/python3.10/site-packages/accelerate/commands/accelerate_cli.py&quot;, line 45, in main
+    args.func(args)
+  File &quot;/root/.conda/envs/wenzi/lib/python3.10/site-packages/accelerate/commands/launch.py&quot;, line 918, in launch_command
+    simple_launcher(args)
+  File &quot;/root/.conda/envs/wenzi/lib/python3.10/site-packages/accelerate/commands/launch.py&quot;, line 580, in simple_launcher
+    raise subprocess.CalledProcessError(returncode=process.returncode, cmd=cmd)
+subprocess.CalledProcessError: Command &#39;[&#39;/root/.conda/envs/wenzi/bin/python&#39;, &#39;main.py&#39;, &#39;--train=True&#39;, &#39;--pretrained_model_name_or_path=CompVis/stable-diffusion-v1-4&#39;, &#39;--instance_data_dir=/hdd/Datasets/MVTec-AD&#39;, &#39;--anomaly_data_dir=/hdd/Datasets/dtd&#39;, &#39;--output_dir=4000step_bs32_eps_anomaly2&#39;, &#39;--checkpointing_steps=500&#39;, &#39;--instance_prompt=a photo of sks&#39;, &#39;--resolution=512&#39;, &#39;--train_batch_size=2&#39;, &#39;--class_name=all&#39;, &#39;--gradient_accumulation_steps=1&#39;, &#39;--gradient_checkpointing&#39;, &#39;--use_8bit_adam&#39;, &#39;--mixed_precision=fp16&#39;, &#39;--learning_rate=5e-6&#39;, &#39;--lr_scheduler=constant&#39;, &#39;--lr_warmup_steps=0&#39;, &#39;--max_train_steps=4000&#39;, &#39;--pre_compute_text_embeddings&#39;, &#39;--seed=0&#39;]&#39; returned non-zero exit status 1.
+</code></pre>
+<p>查看报错信息可知道缺乏’transformers’ ——解决：pip install transformers</p>
+<ol start="4">
+<li>报错2</li>
+</ol>
+<pre><code>python setup.py install
+Traceback (most recent call last):
+  File &quot;/root/pro/GLAD/main.py&quot;, line 35, in &lt;module&gt;
+    import bitsandbytes as bnb
+  File &quot;/root/.conda/envs/wenzi/lib/python3.10/site-packages/bitsandbytes/__init__.py&quot;, line 7, in &lt;module&gt;
+    from .autograd._functions import (
+  File &quot;/root/.conda/envs/wenzi/lib/python3.10/site-packages/bitsandbytes/autograd/__init__.py&quot;, line 1, in &lt;module&gt;
+    from ._functions import undo_layout, get_inverse_transform_indices
+  File &quot;/root/.conda/envs/wenzi/lib/python3.10/site-packages/bitsandbytes/autograd/_functions.py&quot;, line 9, in &lt;module&gt;
+    import bitsandbytes.functional as F
+  File &quot;/root/.conda/envs/wenzi/lib/python3.10/site-packages/bitsandbytes/functional.py&quot;, line 17, in &lt;module&gt;
+    from .cextension import COMPILED_WITH_CUDA, lib
+  File &quot;/root/.conda/envs/wenzi/lib/python3.10/site-packages/bitsandbytes/cextension.py&quot;, line 22, in &lt;module&gt;
+    raise RuntimeError(&#39;&#39;&#39;
+RuntimeError: 
+        CUDA Setup failed despite GPU being available. Inspect the CUDA SETUP outputs above to fix your environment!
+        If you cannot find any issues and suspect a bug, please open an issue with detals about your environment:
+        https://github.com/TimDettmers/bitsandbytes/issues 
+Traceback (most recent call last):
+  File &quot;/root/.conda/envs/wenzi/bin/accelerate&quot;, line 8, in &lt;module&gt;
+    sys.exit(main())
+  File &quot;/root/.conda/envs/wenzi/lib/python3.10/site-packages/accelerate/commands/accelerate_cli.py&quot;, line 45, in main
+    args.func(args)
+  File &quot;/root/.conda/envs/wenzi/lib/python3.10/site-packages/accelerate/commands/launch.py&quot;, line 918, in launch_command
+    simple_launcher(args)
+  File &quot;/root/.conda/envs/wenzi/lib/python3.10/site-packages/accelerate/commands/launch.py&quot;, line 580, in simple_launcher
+    raise subprocess.CalledProcessError(returncode=process.returncode, cmd=cmd)
+</code></pre>
+<p>bitsandbytes不兼容的问题，卸载重装即可</p>
+<pre><code>pip uninstall bitsandbytes
+pip install bitsandbytes
+python -m bitsandbytes
+</code></pre>
+<p>输出以下内容完成：</p>
+<pre><code>CUDA SETUP: WARNING! CUDA runtime files not found in any environmental path.
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+++++++++++++++++++++++ DEBUG INFO END ++++++++++++++++++++++
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Checking that the library is importable and CUDA is callable...
+SUCCESS!
+Installation was successful!
+</code></pre>
+<p>如果没解决，则需要根据cuda重新编译这个库，尽量不要这样做，可以使用conda和pip多试几次，不行再编译</p>
+<pre><code>git clone git@github.com:TimDettmers/bitsandbytes.git
+cd bitsandbytes
+CUDA_VERSION=122  # 根据你的CUDA版本设置
+python setup.py install
+</code></pre>
+<ol start="5">
+<li>报错3</li>
+</ol>
+<p>requests.exceptions.ReadTimeout: (ReadTimeoutError(“HTTPSConnectionPool(host&#x3D;’cdn-lfs.hf-mirror.com’, port&#x3D;443): Read timed out. (read timeout&#x3D;10)”),</p>
+<p>网络问题，只能多试几次，它是访问镜像，所以不用科学上网。</p>
+<ol start="6">
+<li>兼容性</li>
+</ol>
+<pre><code>Loading pipeline components...:  17%|████████████████████████████████████████                                                                                                                                                                                                        | 1/6 [00:06&lt;00:34,  6.88s/it]
+Traceback (most recent call last):
+  File &quot;/root/pro/GLAD/main.py&quot;, line 530, in &lt;module&gt;
+    dino_model, val_pipe = load_test_model(args, torch.float16)
+  File &quot;/root/pro/GLAD/main.py&quot;, line 394, in load_test_model
+    val_pipe = StableDiffusionPipeline.from_pretrained(
+  File &quot;/root/.conda/envs/wenzi/lib/python3.10/site-packages/diffusers/pipelines/pipeline_utils.py&quot;, line 1093, in from_pretrained
+    loaded_sub_model = load_sub_model(
+  File &quot;/root/.conda/envs/wenzi/lib/python3.10/site-packages/diffusers/pipelines/pipeline_utils.py&quot;, line 467, in load_sub_model
+    loaded_sub_model = load_method(os.path.join(cached_folder, name), **loading_kwargs)
+  File &quot;/root/.conda/envs/wenzi/lib/python3.10/site-packages/transformers/modeling_utils.py&quot;, line 3318, in from_pretrained
+    raise ImportError(
+ImportError: Using `low_cpu_mem_usage=True` or a `device_map` requires Accelerate: `pip install accelerate`
+</code></pre>
+<p>包有点冲突，卸载后重装一下，不卸载直接执行也可以：pip install accelerate</p>
+<h2 id="1-2-数据集相关"><a href="#1-2-数据集相关" class="headerlink" title="1.2 数据集相关"></a>1.2 数据集相关</h2><ol>
+<li>下载MVTec数据集</li>
+</ol>
+<p>wget <a target="_blank" rel="noopener" href="https://www.mydrive.ch/shares/38536/3830184030e49fe74747669442f0f282/download/420938113-1629952094/mvtec_anomaly_detection.tar.xz">https://www.mydrive.ch/shares/38536/3830184030e49fe74747669442f0f282/download/420938113-1629952094/mvtec_anomaly_detection.tar.xz</a></p>
+<p>解压：</p>
+<p>tar -xvf mvtec_anomaly_detection.tar.xz -C 你的目录&#x2F;dataset&#x2F;MVTec-AD</p>
+<ol start="2">
+<li>DTD数据集</li>
+</ol>
+<p><a target="_blank" rel="noopener" href="https://www.robots.ox.ac.uk/~vgg/data/dtd/">https://www.robots.ox.ac.uk/~vgg/data/dtd/</a> 一样的</p>
+<h2 id="1-3-训练"><a href="#1-3-训练" class="headerlink" title="1.3 训练"></a>1.3 训练</h2><p>修改文件目录</p>
+<pre class=" language-sh"><code class="language-sh">export INSTANCE_DIR='/root/pro/GLAD/dataset/MVTec-AD' # 你的，尽量用绝对地址
+export OUTPUT_DIR="4000step_bs32_eps_anomaly2" ## 模型输出目录
+export ANOMALY_DIR="/root/pro/GLAD/dataset/dtd" # 同上
+export CLASS_NAME="all"
+export MAX_TRAIN_STEP=4000
+export SEED=0
+
+accelerate launch main.py \
+    --train=True \
+    --pretrained_model_name_or_path="/root/pro/GLAD/stable-diffusion-v1-4" \ # 还有这里需要修改
+    --instance_data_dir=$INSTANCE_DIR \
+    --anomaly_data_dir=$ANOMALY_DIR \
+    --output_dir=$OUTPUT_DIR \
+    --checkpointing_steps=500 \ # 多少个保存一下
+    --instance_prompt="a photo of sks" \
+    --resolution=512 \
+    --train_batch_size=2 \
+    --class_name=$CLASS_NAME \
+    --gradient_accumulation_steps=1 --gradient_checkpointing \
+    --use_8bit_adam \
+    --mixed_precision="fp16" \
+    --learning_rate=5e-6 \
+    --lr_scheduler="constant" \
+    --lr_warmup_steps=0 \
+    --max_train_steps=$MAX_TRAIN_STEP \
+    --pre_compute_text_embeddings \
+    --seed=$SEED
+</code></pre>
+<p><img src="https://volta-1309445959.cos.ap-beijing.myqcloud.com/blog/image-20240914182512271.png" alt="image-20240914182512271"></p>
+<h2 id="1-4-测试"><a href="#1-4-测试" class="headerlink" title="1.4 测试"></a>1.4 测试</h2><p>修改启动文件 test.sh</p>
+<pre class=" language-shell"><code class="language-shell">export INSTANCE_DIR='/root/pro/GLAD/dataset/MVTec-AD'
+export ANOMALY_DIR="/root/pro/GLAD/dataset/dtd"
+export CLASS_NAME="all"
+export SEED=0
+
+accelerate launch main.py \
+    --instance_data_dir=$INSTANCE_DIR \
+    --anomaly_data_dir=$ANOMALY_DIR \
+    --checkpointing_steps=500 \
+    --instance_prompt="a photo of sks" \
+    --resolution=512 \
+    --test_batch_size=2 \
+    --class_name=$CLASS_NAME \
+    --pre_compute_text_embeddings \
+    --seed=$SEED
+</code></pre>
+<p>缺bin文件，可以从它给的地址里下载，如果没下载而是用跑出来的文件加载还是无法加载权重，这是因为我们的文件是.safetensors，更换加载权重的方式即可。</p>
+<p><code>.safetensors</code> 和 <code>.bin</code> 文件都是存储模型权重的方式，但 <code>.safetensors</code> 是一个更优化的格式，提供了安全的序列化和更快的加载。</p>
+<p>在main.py的上方写如下代码导入包：<code>from safetensors.torch import load_file</code></p>
+<p>在main.py的264行修改</p>
+<pre class=" language-py"><code class="language-py">        val_pipe.unet.load_state_dict(
+            load_file(args.output_dir + f"/checkpoint-&#123;checkpoint_step&#125;/model.safetensors")
+            # torch.load(args.output_dir + f"/checkpoint-&#123;checkpoint_step&#125;/pytorch_model.bin"))
+        )
+</code></pre>
+<p><img src="https://volta-1309445959.cos.ap-beijing.myqcloud.com/blog/image-20240914202739376.png" alt="image-20240914202739376"></p>
+<h2 id="1-5-多类别训练"><a href="#1-5-多类别训练" class="headerlink" title="1.5 多类别训练"></a>1.5 多类别训练</h2><p>执行<code>bash train_multi.sh</code>遇到：</p>
+<pre><code>/root/pro/GLAD/dataset/MVTec-AD
+Traceback (most recent call last):
+  File &quot;/root/pro/GLAD/main_multi.py&quot;, line 532, in &lt;module&gt;
+    main(args, &quot;&quot;)
+  File &quot;/root/pro/GLAD/main_multi.py&quot;, line 469, in main
+    train_dataset = MVTecDataset(
+TypeError: MVTecDataset.__init__() got an unexpected keyword argument &#39;anomaly_path&#39;
+Traceback (most recent call last):
+</code></pre>
+<p>修改dataset&#x2F;dataset_multiclass.py为：</p>
+<pre class=" language-py"><code class="language-py">    def __init__(
+            self,
+            instance_data_root,
+            instance_prompt,
+            tokenizer,
+            resize=512,
+            img_size=512,
+            center_crop=False,
+            train=True,
+            class_name="",
+            encoder_hidden_states=None,
+            anomaly_path="/root/pro/GLAD/dataset/dtd"
+    ):
+
+        self.tokenizer = tokenizer
+        self.encoder_hidden_states = encoder_hidden_states
+        self.anomaly_path = anomaly_path
+        self.resize = resize
+        self.img_size = img_size
+        self.center_crop = center_crop
+        self.instance_data_root = instance_data_root
+        self.type = 'train' if train else 'test'
+</code></pre>
+<p>以及192行左右：</p>
+<pre class=" language-py"><code class="language-py">def generate_anomaly(self, image):
+    aug_ind = np.random.choice(np.arange(len(self.augmenters)), 3, replace=False)
+    aug = iaa.Sequential([self.augmenters[aug_ind[0]],
+                          self.augmenters[aug_ind[1]],
+                          self.augmenters[aug_ind[2]]]
+                         )
+
+    # anomaly_source_paths = sorted(glob.glob("/hdd/Datasets/dtd/images" + "/*/*.jpg"))
+    # anomaly_source_image = self.anomaly_source(image, anomaly_source_paths, aug)
+    anomaly_source_paths = sorted(glob.glob(f"&#123;self.anomaly_path&#125;/images" + "/*/*.jpg"))
+    anomaly_source_image = self.anomaly_source(image, anomaly_source_paths, aug)
+</code></pre>
+<p>跑通截图：</p>
+<p><img src="https://volta-1309445959.cos.ap-beijing.myqcloud.com/blog/image-20240914222008090.png" alt="image-20240914222008090"></p>
+<p>显存占用情况：</p>
+<pre><code>+---------------------------------------------------------------------------------------+
+| NVIDIA-SMI 535.54.03              Driver Version: 535.54.03    CUDA Version: 12.2     |
+|-----------------------------------------+----------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |         Memory-Usage | GPU-Util  Compute M. |
+|                                         |                      |               MIG M. |
+|=========================================+======================+======================|
+|   0  NVIDIA A100-SXM4-80GB          On  | 00000000:4D:00.0 Off |                    0 |
+| N/A   43C    P0             134W / 400W |  24425MiB / 81920MiB |     26%      Default |
+|                                         |                      |             Disabled |
++-----------------------------------------+----------------------+----------------------+
+                                                                                         
++---------------------------------------------------------------------------------------+
+| Processes:                                                                            |
+|  GPU   GI   CI        PID   Type   Process name                            GPU Memory |
+|        ID   ID                                                             Usage      |
+|=======================================================================================|
++---------------------------------------------------------------------------------------+
+</code></pre>
+<h2 id="1-5-多类别测试"><a href="#1-5-多类别测试" class="headerlink" title="1.5 多类别测试"></a>1.5 多类别测试</h2><pre><code>export INSTANCE_DIR=&#39;/root/pro/GLAD/dataset/MVTec-AD&#39;
+export OUTPUT_DIR=&quot;20000step_bs32_eps_anomaly2_multiclass&quot;
+export SEED=0
+
+accelerate launch main_multi.py \
+    --instance_data_dir=$INSTANCE_DIR \
+    --output_dir=$OUTPUT_DIR \
+    --resolution=256 \
+    --test_batch_size=2 \
+    --pre_compute_text_embeddings \
+    --seed=$SEED
+</code></pre>
+<p>跑了一下发现没什么报错，只是需要模型文件。</p>
+<pre><code>To avoid this warning pass in values for each of the problematic parameters or run `accelerate config`.
+The config attributes &#123;&#39;safety_checker&#39;: [&#39;stable_diffusion&#39;, &#39;StableDiffusionSafetyChecker&#39;]&#125; were passed to StableDiffusionPipeline, but are not expected and will be ignored. Please verify your model_index.json configuration file.
+Keyword arguments &#123;&#39;safety_checker&#39;: [&#39;stable_diffusion&#39;, &#39;StableDiffusionSafetyChecker&#39;]&#125; are not expected by StableDiffusionPipeline and will be ignored.
+Loading pipeline components...: 100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 6/6 [00:02&lt;00:00,  2.99it/s]
+Test checkpoint step 20000 Sat Sep 14 22:26:03 2024
+Traceback (most recent call last):
+  File &quot;/root/pro/GLAD/main_multi.py&quot;, line 625, in &lt;module&gt;
+    torch.load(f&quot;&#123;args.output_dir&#125;/checkpoint-&#123;checkpoint_step&#125;/pytorch_model.bin&quot;)
+  File &quot;/root/.conda/envs/wenzi/lib/python3.10/site-packages/torch/serialization.py&quot;, line 791, in load
+    with _open_file_like(f, &#39;rb&#39;) as opened_file:
+  File &quot;/root/.conda/envs/wenzi/lib/python3.10/site-packages/torch/serialization.py&quot;, line 271, in _open_file_like
+    return _open_file(name_or_buffer, mode)
+  File &quot;/root/.conda/envs/wenzi/lib/python3.10/site-packages/torch/serialization.py&quot;, line 252, in __init__
+    super().__init__(open(name, mode))
+FileNotFoundError: [Errno 2] No such file or directory: &#39;model/MVTec-AD_20000step_bs32_eps_anomaly2_multiclass_0/checkpoint-20000/pytorch_model.bin&#39;
+</code></pre>
+<p>4G左右，从官方云盘下载或者跑完测试改成safetensors即可，和之前单类的一致。</p>
+<h2 id="1-6-结果目录树"><a href="#1-6-结果目录树" class="headerlink" title="1.6 结果目录树"></a>1.6 结果目录树</h2><pre><code>/root/pro/GLAD
+├── __pycache__
+├── dataset
+│   ├── MVTec-AD
+│   │   ├── bottle
+│   │   │   ├── ground_truth
+│   │   │   │   ├── broken_large
+│   │   │   │   ├── broken_small
+│   │   │   │   └── contamination
+│   │   │   ├── test
+│   │   │   │   ├── broken_large
+│   │   │   │   ├── broken_small
+│   │   │   │   ├── contamination
+│   │   │   │   └── good
+│   │   │   └── train
+│   │   │       └── good
+...
+│   │   └── zipper
+│   │       ├── ground_truth
+│   │       │   ├── broken_teeth
+│   │       │   ├── combined
+│   │       │   ├── fabric_border
+│   │       │   ├── fabric_interior
+│   │       │   ├── rough
+│   │       │   ├── split_teeth
+│   │       │   └── squeezed_teeth
+│   │       ├── test
+│   │       │   ├── broken_teeth
+│   │       │   ├── combined
+│   │       │   ├── fabric_border
+│   │       │   ├── fabric_interior
+│   │       │   ├── good
+│   │       │   ├── rough
+│   │       │   ├── split_teeth
+│   │       │   └── squeezed_teeth
+│   │       └── train
+│   │           └── good
+│   ├── __pycache__
+│   ├── dtd
+│   │   ├── images
+│   │   │   ├── banded
+│   │   │   ├── blotchy
+│   │   │   ├── braided
+│   │   │   ├── bubbly
+│   │   │   ├── bumpy
+...
+│   │   │   ├── woven
+│   │   │   ├── wrinkled
+│   │   │   └── zigzagged
+│   │   ├── imdb
+│   │   └── labels
+│   └── visa
+│       ├── candle
+│       │   └── Data
+│       │       ├── Images
+│       │       │   ├── Anomaly
+│       │       │   └── Normal
+│       │       └── Masks
+│       │           └── Anomaly
+...
+│       │   └── Data
+│       │       ├── Images
+│       │       │   ├── Anomaly
+│       │       │   └── Normal
+│       │       └── Masks
+│       │           └── Anomaly
+│       └── split_csv
+├── dino
+│   └── __pycache__
+├── model
+│   ├── MVTec-AD_20000step_bs32_eps_anomaly2_multiclass_0
+│   ├── candle_8000step_bs32_eps_anomaly2_0
+│   │   └── checkpoint-4000
+│   ├── carpet_4000step_bs32_eps_anomaly2_0
+│   │   ├── checkpoint-1000
+│   │   ├── checkpoint-1500
+│   │   ├── checkpoint-2000
+│   │   ├── checkpoint-2500
+│   │   ├── checkpoint-3000
+│   │   ├── checkpoint-3500
+│   │   ├── checkpoint-4000
+│   │   └── checkpoint-500
+│   ├── grid_4000step_bs32_eps_anomaly2_0
+│   └── visa_dino
+│       └── candle_4mlp_256_200_bs16_0.0003_15_no_grad2_lmd0.01
+├── stable-diffusion-v1-4
+│   ├── feature_extractor
+│   ├── safety_checker
+│   ├── scheduler
+│   ├── text_encoder
+│   ├── tokenizer
+│   ├── unet
+│   └── vae
+└── utilize
+    └── __pycache__
+</code></pre>
+<h1 id="2-跑通ECCV-TransFusion"><a href="#2-跑通ECCV-TransFusion" class="headerlink" title="2. 跑通ECCV_TransFusion"></a>2. 跑通ECCV_TransFusion</h1><p>地址：<a target="_blank" rel="noopener" href="https://github.com/MaticFuc/ECCV_TransFusion">https://github.com/MaticFuc/ECCV_TransFusion</a></p>
+<p>数据集下载：<a target="_blank" rel="noopener" href="https://amazon-visual-anomaly.s3.us-west-2.amazonaws.com/VisA_20220922.tar">https://amazon-visual-anomaly.s3.us-west-2.amazonaws.com/VisA_20220922.tar</a></p>
+<p>使用wget或者下载再上传都可以</p>
+<h2 id="1-问题1"><a href="#1-问题1" class="headerlink" title="1. 问题1"></a>1. 问题1</h2><p> 执行：python Experiment.py -c test -r RUN_NAME -d .&#x2F;datasets&#x2F;visa&#x2F; -ds visa –mode rgb</p>
+<p>报错</p>
+<pre><code>./fg_masks//visa_masks/candle
+Traceback (most recent call last):
+  File &quot;/root/pro/ECCV_TransFusion/Experiment.py&quot;, line 335, in &lt;module&gt;
+    auroc, aupro = test(args)
+  File &quot;/root/pro/ECCV_TransFusion/Experiment.py&quot;, line 126, in test
+    auroc, aupro = evaluate(PATH, testset, net, experiment, load_weights=True)
+  File &quot;/root/pro/ECCV_TransFusion/Experiment.py&quot;, line 136, in evaluate
+    net.load_state_dict(torch.load(PATH + f&quot;models/&#123;category&#125;_model.pkl&quot;))
+  File &quot;/root/.conda/envs/wenzi/lib/python3.10/site-packages/torch/serialization.py&quot;, line 791, in load
+    with _open_file_like(f, &#39;rb&#39;) as opened_file:
+  File &quot;/root/.conda/envs/wenzi/lib/python3.10/site-packages/torch/serialization.py&quot;, line 271, in _open_file_like
+    return _open_file(name_or_buffer, mode)
+  File &quot;/root/.conda/envs/wenzi/lib/python3.10/site-packages/torch/serialization.py&quot;, line 252, in __init__
+    super().__init__(open(name, mode))
+FileNotFoundError: [Errno 2] No such file or directory: &#39;./experiments//RUN_NAME/models/candle_model.pkl&#39;
+</code></pre>
+<p>在script中找到scripts&#x2F;download_fg_masks.sh，下载对应文件</p>
+<p>如果你也下载不了的话：</p>
+<pre><code>gdown https://docs.google.com/uc?id=1oWAWDnZBcRcdVMyPk4zW0c6pNDmBqbOv
+gdown https://docs.google.com/uc?id=1NOJSeAYwfgrQbaQq08B2zL9i9_yXAic2
+gdown https://docs.google.com/uc?id=1vMjKhxSH1UdFLIAXu2pr_9UqoknmVUJA
+</code></pre>
+<p>将上方内容修改成下方内容，然后手动一个一个打开下载</p>
+<pre><code>gdown https://drive.google.com/uc?id=1oWAWDnZBcRcdVMyPk4zW0c6pNDmBqbOv
+gdown https://drive.google.com/uc?id=1NOJSeAYwfgrQbaQq08B2zL9i9_yXAic2
+gdown https://drive.google.com/uc?id=1vMjKhxSH1UdFLIAXu2pr_9UqoknmVUJA
+</code></pre>
+<p>cd experiments<br>mkdir transfusion_visa<br>cd transfusion_visa<br>mkdir models<br>cd models</p>
+<h2 id="2-问题2"><a href="#2-问题2" class="headerlink" title="2. 问题2"></a>2. 问题2</h2><p>训练：</p>
+<p>   python Experiment.py -c train -r  transfusion_visa -d .&#x2F;datasets&#x2F;visa&#x2F; -ds visa –mode rgb –dtd-data-path .&#x2F;datasets&#x2F;dtd&#x2F;images&#x2F;</p>
+<p>如果遇到Experiment.py: error: unrecognized arguments: –dtd-data-path .&#x2F;datasets&#x2F;dtd&#x2F;images&#x2F;</p>
+<p>去掉data：   python Experiment.py -c train -r  transfusion_visa -d .&#x2F;datasets&#x2F;visa&#x2F; -ds visa –mode rgb –dtd-data-path .&#x2F;datasets&#x2F;dtd&#x2F;images&#x2F;</p>
+<h2 id="3-问题3"><a href="#3-问题3" class="headerlink" title="3. 问题3"></a>3. 问题3</h2><p>没有图片</p>
+<p>修改数据集格式：</p>
+<p>克隆该仓库：<a target="_blank" rel="noopener" href="https://github.com/amazon-science/spot-diff?tab=readme-ov-file#data-download">https://github.com/amazon-science/spot-diff?tab=readme-ov-file#data-download</a></p>
+<p>按你的本地文件夹格式修改如下命令：</p>
+<p>python .&#x2F;utils&#x2F;prepare_data.py –split-type 1cls –data-folder .&#x2F;VisA –save-folder .&#x2F;VisA_pytorch –split-file .&#x2F;split_csv&#x2F;1cls.csv</p>
+<h2 id="4-问题4"><a href="#4-问题4" class="headerlink" title="4. 问题4"></a>4. 问题4</h2><p>忘记哪个报错了，需要下载模型：</p>
+<p>在项目仓库中有地址：<a target="_blank" rel="noopener" href="https://drive.google.com/file/d/1iXY6ILcDo33wywyI_zl7Hh8ch2W_5lMz/view">https://drive.google.com/file/d/1iXY6ILcDo33wywyI_zl7Hh8ch2W_5lMz/view</a></p>
+<p>下载到experiment，和RUN_NAME同级</p>
+<h2 id="5-问题5"><a href="#5-问题5" class="headerlink" title="5. 问题5"></a>5. 问题5</h2><p>还是没图片，作者多打了一个字母：datasets改成dataset</p>
+<p>改成python Experiment.py -c train -r  transfusion_visa -d .&#x2F;dataset&#x2F;visa_pytorch&#x2F;1cls -ds visa –mode rgb –dtd-path .&#x2F;datasets&#x2F;dtd&#x2F;images&#x2F;</p>
+<p>训练：<code>python Experiment.py -c train -r  transfusion_visa -d ./dataset/visa_pytorch/1cls -ds visa --mode rgb --dtd-path ./dataset/dtd/images/</code></p>
+<p>跑通训练：</p>
+<p><img src="https://volta-1309445959.cos.ap-beijing.myqcloud.com/blog/image-20240914174147853.png" alt="image-20240914174147853"></p>
+<p>默认配置下，24G显存大概消耗70%</p>
+<p>测试：<code>   python Experiment.py -c test -r transfusion_visa -d ./dataset/visa_pytorch/1cls -ds visa --mode rgb</code></p>
+<p>跑通测试：</p>
+<p><img src="https://volta-1309445959.cos.ap-beijing.myqcloud.com/blog/image-20240914174519771.png" alt="image-20240914174519771"></p>
+<h2 id="5-问题5-1"><a href="#5-问题5-1" class="headerlink" title="5. 问题5"></a>5. 问题5</h2><pre><code>[ WARN:0@6.246] global loadsave.cpp:241 findDecoder imread_(&#39;./dataset/visa_pytorch/1cls/candle/ground_truth/good/0920.png&#39;): can&#39;t open/read file: check file path/integrity
+[ WARN:0@6.246] global loadsave.cpp:241 findDecoder imread_(&#39;./dataset/visa_pytorch/1cls/candle/ground_truth/good/0923.png&#39;): can&#39;t open/read file: check file path/integrity
+[ WARN:0@6.246] global loadsave.cpp:241 findDecoder imread_(&#39;./dataset/visa_pytorch/1cls/candle/ground_truth/good/0935.png&#39;): can&#39;t open/read file: check file path/integrity
+[ WARN:0@6.246] global loadsave.cpp:241 findDecoder imread_(&#39;./dataset/visa_pytorch/1cls/candle/ground_truth/good/0952.png&#39;): can&#39;t open/read file: check file path/integrity
+[ WARN:0@6.246] global loadsave.cpp:241 findDecoder imread_(&#39;./dataset/visa_pytorch/1cls/candle/ground_truth/good/0953.png&#39;): can&#39;t open/read file: check file path/integrity
+[ WARN:0@6.246] global loadsave.cpp:241 findDecoder imread_(&#39;./dataset/visa_pytorch/1cls/candle/ground_truth/good/0964.png&#39;): can&#39;t open/read file: check file path/integrity
+[ WARN:0@6.246] global loadsave.cpp:241 findDecoder imread_(&#39;./dataset/visa_pytorch/1cls/candle/ground_truth/good/0967.png&#39;): can&#39;t open/read file: check file path/integrity
+[ WARN:0@6.246] global loadsave.cpp:241 findDecoder imread_(&#39;./dataset/visa_pytorch/1cls/candle/ground_truth/good/0974.png&#39;): can&#39;t open/read file: check file path/integrity
+[ WARN:0@6.246] global loadsave.cpp:241 findDecoder imread_(&#39;./dataset/visa_pytorch/1cls/candle/ground_truth/good/0985.png&#39;): can&#39;t open/read file: check file path/integrity
+[ WARN:0@6.246] global loadsave.cpp:241 findDecoder imread_(&#39;./dataset/visa_pytorch/1cls/candle/ground_truth/good/0994.png&#39;): can&#39;t open/read file: check file path/integrity
+[ WARN:0@6.246] global loadsave.cpp:241 findDecoder imread_(&#39;./dataset/visa_pytorch/1cls/candle/ground_truth/good/0996.png&#39;): can&#39;t open/read file: check file path/integrity
+</code></pre>
+<p>这个问题是正常的，和之后的报错无关系，<a target="_blank" rel="noopener" href="https://github.com/MaticFuc/ECCV_TransFusion/issues/2">https://github.com/MaticFuc/ECCV_TransFusion/issues/2</a></p>
+<h2 id="6-文件树"><a href="#6-文件树" class="headerlink" title="6. 文件树"></a>6. 文件树</h2><pre><code>/root/pro/ECCV_TransFusion/
+├── dataset
+│   ├── __pycache__
+│   └── visa_pytorch
+│       └── 1cls
+│           ├── candle
+│           │   ├── ground_truth
+│           │   │   └── bad
+│           │   ├── test
+│           │   │   ├── bad
+│           │   │   └── good
+│           │   └── train
+│           │       └── good
+...
+│           ├── pcb4
+│           │   ├── ground_truth
+│           │   │   └── bad
+│           │   ├── test
+│           │   │   ├── bad
+│           │   │   └── good
+│           │   └── train
+│           │       └── good
+│           └── pipe_fryum
+│               ├── ground_truth
+│               │   └── bad
+│               ├── test
+│               │   ├── bad
+│               │   └── good
+│               └── train
+│                   └── good
+├── experiments
+│   ├── RUN_NAME
+│   └── transfusion_visa
+│       └── models
+├── fg_masks
+│   └── visa_masks
+│       ├── candle
+│       │   └── train
+│       │       └── good
+...
+│       └── pipe_fryum
+│           └── train
+│               └── good
+├── material
+├── model
+│   └── __pycache__
+├── scripts
+├── spot-diff
+│   ├── figures
+│   ├── split_csv
+│   └── utils
+└── utils
+    └── __pycache__
+</code></pre>
+
+                
+            </div>
+            <hr/>
+
+            
+
+    <div class="reprint" id="reprint-statement">
+        
+            <div class="reprint__author">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-user">
+                        文章作者:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="/about" rel="external nofollow noreferrer">Volta</a>
+                </span>
+            </div>
+            <div class="reprint__type">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-link">
+                        文章链接:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="http://Volta-lemon.github.io/post/3.html">http://Volta-lemon.github.io/post/3.html</a>
+                </span>
+            </div>
+            <div class="reprint__notice">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-copyright">
+                        版权声明:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    本博客所有文章除特別声明外，均采用
+                    <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
+                    许可协议。转载请注明来源
+                    <a href="/about" target="_blank">Volta</a>
+                    !
+                </span>
+            </div>
+        
+    </div>
+
+    <script async defer>
+      document.addEventListener("copy", function (e) {
+        let toastHTML = '<span>复制成功，请遵循本文的转载规则</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">查看</a>';
+        M.toast({html: toastHTML})
+      });
+
+      function navToReprintStatement() {
+        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
+      }
+    </script>
+
+
+
+            <div class="tag_share" style="display: block;">
+                <div class="post-meta__tag-list" style="display: inline-block;">
+                    
+                        <div class="article-tag">
+                            
+                                <a href="/tags/diffusion/">
+                                    <span class="chip bg-color">diffusion</span>
+                                </a>
+                            
+                        </div>
+                    
+                </div>
+                <div class="post_share" style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
+                    <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+<div id="article-share">
+
+    
+    <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="/libs/share/js/social-share.min.js"></script>
+    
+
+    
+
+</div>
+
+                </div>
+            </div>
+            
+                <div id="reward">
+    <a href="#rewardModal" class="reward-link modal-trigger btn-floating btn-medium waves-effect waves-light red">赏</a>
+
+    <!-- Modal Structure -->
+    <div id="rewardModal" class="modal">
+        <div class="modal-content">
+            <a class="close modal-close"><i class="fas fa-times"></i></a>
+            <h4 class="reward-title">你的赏识是我前进的动力</h4>
+            <div class="reward-content">
+                <div class="reward-tabs">
+                    <ul class="tabs row">
+                        <li class="tab col s6 alipay-tab waves-effect waves-light"><a href="#alipay">支付宝</a></li>
+                        <li class="tab col s6 wechat-tab waves-effect waves-light"><a href="#wechat">微 信</a></li>
+                    </ul>
+                    <div id="alipay">
+                        <img src="/medias/reward/alipay.jpg" class="reward-img" alt="支付宝打赏二维码">
+                    </div>
+                    <div id="wechat">
+                        <img src="/medias/reward/wechat.png" class="reward-img" alt="微信打赏二维码">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.tabs').tabs();
+    });
+</script>
+
+            
+        </div>
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
+            <div class="card">
+                <a href="/post/3.html">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/00098-2534201318.png" class="responsive-img" alt="GLAD项目复现">
+                        
+                        <span class="card-title">GLAD项目复现</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2024-09-25
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" class="post-category">
+                                    深度学习
+                                </a>
+                            
+                            <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E9%A1%B9%E7%9B%AE%E5%A4%8D%E7%8E%B0/" class="post-category">
+                                    项目复现
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/diffusion/">
+                        <span class="chip bg-color">diffusion</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/post/2.html">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/00160-3218797061.png" class="responsive-img" alt="基于大模型的文本内容智能评判">
+                        
+                        <span class="card-title">基于大模型的文本内容智能评判</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2024-08-29
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" class="post-category">
+                                    深度学习
+                                </a>
+                            
+                            <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E6%AF%94%E8%B5%9B/" class="post-category">
+                                    比赛
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/LLM/">
+                        <span class="chip bg-color">LLM</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+
+</div>
+
+
+
+<!-- 代码块功能依赖 -->
+<script type="text/javascript" src="/libs/codeBlock/codeBlockFuction.js"></script>
+
+
+
+<!-- 代码语言 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeLang.js"></script>
+
+
+<!-- 代码块复制 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeCopy.js"></script>
+
+
+<!-- 代码块收缩 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeShrink.js"></script>
+
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget card" style="background-color: white;">
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fas fa-list-ul"></i>
+    </a>
+</div>
+
+
+<script src="/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            collapseDepth: Number('0'),
+            headingSelector: 'h2, h3, h4'
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).hide();
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).show();
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+
+    
+
+</main>
+
+
+
+
+    <footer class="page-footer bg-color">
+    
+        <link rel="stylesheet" href="/libs/aplayer/APlayer.min.css">
+<style>
+    .aplayer .aplayer-lrc p {
+        
+        display: none;
+        
+        font-size: 12px;
+        font-weight: 700;
+        line-height: 16px !important;
+    }
+
+    .aplayer .aplayer-lrc p.aplayer-lrc-current {
+        
+        display: none;
+        
+        font-size: 15px;
+        color: #42b983;
+    }
+
+    
+    .aplayer.aplayer-fixed.aplayer-narrow .aplayer-body {
+        left: -66px !important;
+    }
+
+    .aplayer.aplayer-fixed.aplayer-narrow .aplayer-body:hover {
+        left: 0px !important;
+    }
+
+    
+</style>
+<div class="">
+    
+    <div class="row">
+        <meting-js class="col l8 offset-l2 m10 offset-m1 s12"
+                   server="netease"
+                   type="playlist"
+                   id="503838841"
+                   fixed='true'
+                   autoplay='false'
+                   theme='#42b983'
+                   loop='all'
+                   order='random'
+                   preload='auto'
+                   volume='0.7'
+                   list-folded='true'
+        >
+        </meting-js>
+    </div>
+</div>
+
+<script src="/libs/aplayer/APlayer.min.js"></script>
+<script src="/libs/aplayer/Meting.min.js"></script>
+
+    
+
+    <div class="container row center-align"
+         style="margin-bottom: 0px !important;">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&nbsp;&copy;
+            
+                <span id="year">2019-2024</span>
+            
+            <a href="/about" target="_blank">Volta</a>
+            |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
+            |&nbsp;Theme&nbsp;<a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">Matery</a>
+            
+            <br>
+            
+                &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
+                        class="white-color">17.3k</span>
+            
+            
+            
+                
+            
+            
+                <span id="busuanzi_container_site_pv">
+                &nbsp;|&nbsp;<i class="far fa-eye"></i>&nbsp;总访问量:&nbsp;
+                    <span id="busuanzi_value_site_pv" class="white-color"></span>
+            </span>
+            
+            
+                <span id="busuanzi_container_site_uv">
+                &nbsp;|&nbsp;<i class="fas fa-users"></i>&nbsp;总访问人数:&nbsp;
+                    <span id="busuanzi_value_site_uv" class="white-color"></span>
+            </span>
+            
+            <br>
+
+            <!-- 运行天数提醒. -->
+            
+            <br>
+            
+        </div>
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/blinkfox" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fab fa-github"></i>
+    </a>
+
+
+
+    <a href="mailto:1181062873@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fas fa-envelope-open"></i>
+    </a>
+
+
+
+
+
+
+
+    <a href="tencent://AddContact/?fromId=50&fromSubId=1&subcmd=all&uin=1181062873" class="tooltipped" target="_blank" data-tooltip="QQ联系我: 1181062873" data-position="top" data-delay="50">
+        <i class="fab fa-qq"></i>
+    </a>
+
+
+
+
+
+
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fas fa-rss"></i>
+    </a>
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script type="text/javascript">
+$(function () {
+    var searchFunc = function (path, search_id, content_id) {
+        'use strict';
+        $.ajax({
+            url: path,
+            dataType: "xml",
+            success: function (xmlResponse) {
+                // get the contents from search data
+                var datas = $("entry", xmlResponse).map(function () {
+                    return {
+                        title: $("title", this).text(),
+                        content: $("content", this).text(),
+                        url: $("url", this).text()
+                    };
+                }).get();
+                var $input = document.getElementById(search_id);
+                var $resultContent = document.getElementById(content_id);
+                $input.addEventListener('input', function () {
+                    var str = '<ul class=\"search-result-list\">';
+                    var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                    $resultContent.innerHTML = "";
+                    if (this.value.trim().length <= 0) {
+                        return;
+                    }
+                    // perform local searching
+                    datas.forEach(function (data) {
+                        var isMatch = true;
+                        var data_title = data.title.trim().toLowerCase();
+                        var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                        var data_url = data.url;
+                        data_url = data_url.indexOf('/') === 0 ? data.url : '/' + data_url;
+                        var index_title = -1;
+                        var index_content = -1;
+                        var first_occur = -1;
+                        // only match artiles with not empty titles and contents
+                        if (data_title !== '' && data_content !== '') {
+                            keywords.forEach(function (keyword, i) {
+                                index_title = data_title.indexOf(keyword);
+                                index_content = data_content.indexOf(keyword);
+                                if (index_title < 0 && index_content < 0) {
+                                    isMatch = false;
+                                } else {
+                                    if (index_content < 0) {
+                                        index_content = 0;
+                                    }
+                                    if (i === 0) {
+                                        first_occur = index_content;
+                                    }
+                                }
+                            });
+                        }
+                        // show search results
+                        if (isMatch) {
+                            str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                            var content = data.content.trim().replace(/<[^>]+>/g, "");
+                            if (first_occur >= 0) {
+                                // cut out 100 characters
+                                var start = first_occur - 20;
+                                var end = first_occur + 80;
+                                if (start < 0) {
+                                    start = 0;
+                                }
+                                if (start === 0) {
+                                    end = 100;
+                                }
+                                if (end > content.length) {
+                                    end = content.length;
+                                }
+                                var match_content = content.substr(start, end);
+                                // highlight all keywords
+                                keywords.forEach(function (keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    match_content = match_content.replace(regS, "<em class=\"search-keyword\">" + keyword + "</em>");
+                                });
+
+                                str += "<p class=\"search-result\">" + match_content + "...</p>"
+                            }
+                            str += "</li>";
+                        }
+                    });
+                    str += "</ul>";
+                    $resultContent.innerHTML = str;
+                });
+            }
+        });
+    };
+
+    searchFunc('/search.xml', 'searchInput', 'searchResult');
+});
+</script>
+
+    <!-- 白天和黑夜主题 -->
+<div class="stars-con">
+    <div id="stars"></div>
+    <div id="stars2"></div>
+    <div id="stars3"></div>  
+</div>
+
+<script>
+    function switchNightMode() {
+        $('<div class="Cuteen_DarkSky"><div class="Cuteen_DarkPlanet"></div></div>').appendTo($('body')),
+        setTimeout(function () {
+            $('body').hasClass('DarkMode') 
+            ? ($('body').removeClass('DarkMode'), localStorage.setItem('isDark', '0'), $('#sum-moon-icon').removeClass("fa-sun").addClass('fa-moon')) 
+            : ($('body').addClass('DarkMode'), localStorage.setItem('isDark', '1'), $('#sum-moon-icon').addClass("fa-sun").removeClass('fa-moon')),
+            
+            setTimeout(function () {
+            $('.Cuteen_DarkSky').fadeOut(1e3, function () {
+                $(this).remove()
+            })
+            }, 2e3)
+        })
+    }
+</script>
+
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</div>
+
+
+    <script src="/libs/materialize/materialize.min.js"></script>
+    <script src="/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="/libs/aos/aos.js"></script>
+    <script src="/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="/js/matery.js"></script>
+
+    
+
+    
+    
+    
+
+    <!-- 雪花特效 -->
+    
+
+    <!-- 鼠标星星特效 -->
+    
+
+     
+        <script src="https://ssl.captcha.qq.com/TCaptcha.js"></script>
+        <script src="/libs/others/TencentCaptcha.js"></script>
+        <button id="TencentCaptcha" data-appid="xxxxxxxxxx" data-cbfn="callback" type="button" hidden></button>
+    
+
+    <!-- Baidu Analytics -->
+
+    <!-- Baidu Push -->
+
+<script>
+    (function () {
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        } else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+    
+    <script src="/libs/others/clicklove.js" async="async"></script>
+    
+    
+    <script async src="/libs/others/busuanzi.pure.mini.js"></script>
+    
+
+    
+
+    
+
+    <!--腾讯兔小巢-->
+    
+    
+
+    
+
+    
+
+    
+    <script src="/libs/instantpage/instantpage.js" type="module"></script>
+    
+
+</body>
+
+</html>
